@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>List</title>
+
+<script src="jquery-1.12.4.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+var listLoading=function(){
+	$.getJSON('list.do', function(data){
+		data.list.forEach(function(ele){
+			console.log('테스트 출력1');
+			$('<tr/>')
+				.append($('<td/>').html('<a href="user.html?id='+ele.id+'">'+ele.id+'</a>'))
+				.append($('<td/>').html('<a href="user.html?id='+ele.name+'">'+ele.name+'</a>'))
+				.append($('<td/>').html('<a href="user.html?id='+ele.email+'">'+ele.email+'</a>'))
+			.appendTo('tbody');
+		});
+	});
+};
+$(function(){
+	console.log('테스트 출력2');
+	listLoading();
+});
+
+</script>
+</head>
+<body>
+		<div id="content">
+			<div>
+				<h2>list page</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>id</th>
+							<th>name</th>
+							<th>email</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+					</tbody>
+				</table>
+			
+			</div>
+		</div>
+	</div>
+</body>
+</html>

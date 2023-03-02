@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../style.css">
+<title>Detail</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+<script src="../js/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+// 값을 받아와서 저장된 값 input에 담을 수 있도록
+var loadData=function(id){ // 불러오는 기준이 들어가야됨
+	$.ajax({
+		url: 'http://localhost:8080/77/user/detail.do',
+		method: 'get',
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		data: {id:id},
+		dataType: 'json',
+		success: function(data){
+				$('#content input')
+					.eq(0).val(data.users[0].id)
+					.end().eq(1).val(data.users[0].name)
+					.end().eq(2).val(data.users[0].title)
+					.end().eq(3).val(data.users[0].txt)
+					.end().eq(4).val(data.users[0].email)
+					;
+			},
+		error: function(xhr, status, err){
+			console.log(status);
+			console.log('-----------');
+			console.log(err);
+		}
+	});
+};
+
+// 수정
+var EditUser=function(){
+	var param=$('#content form').serialize(); //empno=입력값&ename=입력값&sal=입력값
+
+	$.ajax({
+		url: 'http://localhost:8080/77/user/edit.do',
+		type:'post',
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		data:param,
+		dataType: 'json',
+		success : function(data){   //성공했을 경우. data 변수 안에 값을 담아온다.
+			//listLoading();
+		}
+	});
+};
+
+// 삭제
+var DelUser=function(id){
+	$.ajax({
+		url: 'http://localhost:8080/77/user/delete.do',
+		type:'post',
+		contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+		data:{id:id},
+		dataType: 'json',
+		success : function(data){   //성공했을 경우. data 변수 안에 값을 담아온다.
+		}
+	});
+};
+
+$(function(){
+	console.log(location.search); // 선택한 아이디 출력
+	var id=location.search.substr(location.search.indexOf('=')+1);
+	loadData(id); // id값을 보내서 해당 id의 정보들을 가져올 수 있게
+
+	//[디테일 페이지]
+	$('#content form')
+		.find(":text")
+		.prop('readonly', true)
+		.css({'border-color':'red', 'border-width':'0'});
+	
+	//[수정 페이지]
+	$('#btn').click(function(){
+		$('#content')
+			.find('h2').html("수정페이지")
+			.end();
+		
+		$('#content form')
+		.find(":text")
+		.prop('readonly', false).end();
+
+	//[수정 → 상세페이지]
+	$(this).click(function(){
+		EditUser();
+		$('#content')
+		.find('h2').html("상세페이지")
+		.end();
+		});
+	})
+	
+	//[삭제 페이지]
+	$('#del').click(function(){
+		var id=location.search.substr(location.search.indexOf('=')+1);
+		DelUser(id);
+		
+	})
+});
+
+
+function ajaxloc(){
+    $.ajax({
+      type : "get",
+      url : "list.html",
+      dataType : "text",
+      error : function() {
+        alert('통신실패');
+      },
+      success : function(data) {
+        location.href = '/77/user/list.html';
+        listLoading();
+      }
+    });
+  }
+
+
+</script>
+</head>
+<body>
+	<div class="container">
+		<div id="content">
+			<h2>상세페이지</h2>
+			<form>
+				<div class="form-group">
+					<label for="id">id</label>
+					<input type="text" name="id" class="form-control" id="id" />
+				</div>
+				<div class="form-group">
+					<label for="name">name</label>
+					<input type="text" name="name" class="form-control" id="name" />
+				</div>
+				<div class="form-group">
+					<label for="title">title</label>
+					<input type="text" name="title" class="form-control" id="title" />
+				</div>
+				<div class="form-group">
+					<label for="txt">txt</label>
+					<input type="text" name="txt" class="form-control" id="txt" />
+				</div>
+				<div class="form-group">
+					<label for="email">email</label>
+					<input type="text" name="email" class="form-control" id="email" />
+				</div>
+				<div>
+					<button type="button" class="btn btn-default" id="btn">수정</button>
+					<button type="button" class="btn btn-default" id="del" onclick="ajaxloc();">삭제</button>
+					<button type="button" class="btn btn-default" onclick="ajaxloc();">뒤로</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
